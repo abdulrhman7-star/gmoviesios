@@ -4,17 +4,17 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Moviey - Akwam Streamer',
-  description: 'نظام بث ومproxy متكامل لموقع أكوام مع تخطي حماية الروابط وتوافق الميديا.',
+  title: 'FamFlix - منصة البث والمشاهدة المباشرة',
+  description: 'منصة FamFlix للبث المباشر ومشاهدة وتحميل الأفلام والمسلسلات بجودة عالية وبدون إعلانات.',
   openGraph: {
-    title: 'Moviey - Akwam Streamer',
-    description: 'نظام بث ومproxy متكامل لموقع أكوام مع تخطي حماية الروابط وتوافق الميديا.',
+    title: 'FamFlix - منصة البث والمشاهدة المباشرة',
+    description: 'منصة FamFlix للبث المباشر ومشاهدة وتحميل الأفلام والمسلسلات بجودة عالية وبدون إعلانات.',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Moviey - Akwam Streamer',
-    description: 'نظام بث ومproxy متكامل لموقع أكوام مع تخطي حماية الروابط وتوافق الميديا.',
+    title: 'FamFlix - منصة البث والمشاهدة المباشرة',
+    description: 'منصة FamFlix للبث المباشر ومشاهدة وتحميل الأفلام والمسلسلات بجودة عالية وبدون إعلانات.',
   },
 };
 

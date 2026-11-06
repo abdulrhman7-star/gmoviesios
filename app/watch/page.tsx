@@ -17,7 +17,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const description = `شاهد وتحميل ${title} بأعلى جودة وبدون إعلانات عبر البث المباشر المباشر والسريع.`;
 
   return {
-    title: `${title} | Moviey Stream`,
+    title: `${title} | FamFlix`,
     description,
     alternates: {
       canonical: canonicalUrl,

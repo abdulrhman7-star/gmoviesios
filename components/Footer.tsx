@@ -24,7 +24,7 @@ export default function Footer() {
                 <Play className="w-4 h-4 fill-white text-white ml-0.5" />
               </div>
               <span className="text-xl font-extrabold tracking-tight text-white">
-                Moviey <span className="text-blue-500">Stream</span>
+                Fam<span className="text-blue-500">Flix</span>
               </span>
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed">
@@ -95,8 +95,8 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-gray-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-          <p>
-            © {new Date().getFullYear()} Moviey Stream. جميع الحقوق محفوظة.
+          <p suppressHydrationWarning>
+            © {new Date().getFullYear()} FamFlix. جميع الحقوق محفوظة.
           </p>
           <div className="flex items-center gap-1">
             <span>صُنع بأعلى معايير الأداء والسرعة</span>

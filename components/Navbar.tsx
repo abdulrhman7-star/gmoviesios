@@ -12,7 +12,8 @@ import {
   Menu, 
   X, 
   Sparkles,
-  Zap
+  Zap,
+  Clock
 } from 'lucide-react';
 import EmbedModal from './EmbedModal';
 
@@ -28,7 +29,7 @@ export default function Navbar() {
     return null;
   }
 
-  const handleNavClick = (tab: 'all' | 'movies' | 'series') => {
+  const handleNavClick = (tab: 'all' | 'movies' | 'series' | 'history') => {
     setMobileMenuOpen(false);
     if (pathname !== '/') {
       router.push(`/?tab=${tab}`);
@@ -41,6 +42,11 @@ export default function Navbar() {
       } else if (tab === 'series') {
         const el = document.getElementById('series-section');
         el?.scrollIntoView({ behavior: 'smooth' });
+      } else if (tab === 'history') {
+        const el = document.getElementById('watch-history-section');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
       } else {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -73,8 +79,8 @@ export default function Navbar() {
               <Play className="w-4 h-4 fill-white text-white ml-0.5" />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg font-black tracking-tight text-white flex items-center gap-1">
-                Moviey <span className="text-blue-500">Stream</span>
+              <span className="text-xl font-black tracking-tight text-white flex items-center">
+                Fam<span className="text-blue-500">Flix</span>
               </span>
             </div>
           </Link>
@@ -100,6 +106,13 @@ export default function Navbar() {
             >
               <Tv className="w-4 h-4 text-purple-400" />
               المسلسلات
+            </button>
+            <button
+              onClick={() => handleNavClick('history')}
+              className="flex items-center gap-1.5 hover:text-cyan-400 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+            >
+              <Clock className="w-4 h-4 text-cyan-400" />
+              سجل المشاهدة
             </button>
             <Link
               href="/watch?url=https%3A%2F%2Fakwam.ss%2Fmovies&title=%D9%85%D8%B4%D8%A7%D9%87%D8%AF%D8%A9+%D9%85%D8%A8%D8%A7%D8%B4%D8%B1%D8%A9"
@@ -191,6 +204,13 @@ export default function Navbar() {
               >
                 <Tv className="w-4 h-4 text-purple-400" />
                 <span>المسلسلات الكاملة</span>
+              </button>
+              <button
+                onClick={() => handleNavClick('history')}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-gray-200 hover:bg-gray-800 hover:text-white text-right"
+              >
+                <Clock className="w-4 h-4 text-cyan-400" />
+                <span>سجل المشاهدة</span>
               </button>
             </div>
           </div>

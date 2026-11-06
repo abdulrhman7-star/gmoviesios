@@ -17,6 +17,7 @@ import {
   Check 
 } from 'lucide-react';
 import EmbedModal from './EmbedModal';
+import { addToWatchHistory } from '@/lib/history';
 
 interface VideoLink {
   quality: string;
@@ -82,6 +83,7 @@ export default function WatchClientPlayer({ initialUrl, title, image }: WatchCli
           if (data.success && Array.isArray(data.data) && data.data.length > 0) {
             setVideoLinks(data.data);
             setSelectedQualityIdx(0);
+            addToWatchHistory({ title, url: initialUrl, image });
           } else {
             setError(data.error || 'تعذر استخراج روابط المشاهدة المباشرة');
           }
@@ -101,7 +103,7 @@ export default function WatchClientPlayer({ initialUrl, title, image }: WatchCli
     return () => {
       isCancelled = true;
     };
-  }, [initialUrl]);
+  }, [initialUrl, title, image]);
 
   const activeVideoUrl = videoLinks[selectedQualityIdx]?.url;
 
