@@ -1,13 +1,7 @@
 import { NextResponse } from 'next/server';
-import { Agent } from 'undici';
 
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
-
-const streamAgent = new Agent({
-  connect: {
-    rejectUnauthorized: false
-  }
-});
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -18,7 +12,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const headers: Record<string, string> = {
+    const upstreamHeaders: Record<string, string> = {
       'Referer': 'https://akwam.ss/',
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
       'Accept': '*/*'
@@ -27,15 +21,14 @@ export async function GET(request: Request) {
     // Forward Range header if present for seamless seeking and buffer chunks
     const range = request.headers.get('range');
     if (range) {
-      headers['Range'] = range;
+      upstreamHeaders['Range'] = range;
     }
 
     const response = await fetch(videoUrl, {
-      dispatcher: streamAgent,
-      headers,
+      headers: upstreamHeaders,
       redirect: 'follow',
       cache: 'no-store'
-    } as any);
+    });
 
     if (!response.ok && response.status !== 206) {
       console.warn(`Upstream streaming server returned ${response.status} for ${videoUrl}.`);
@@ -75,6 +68,9 @@ export async function GET(request: Request) {
     responseHeaders.set('Access-Control-Allow-Origin', '*');
     responseHeaders.set('Accept-Ranges', 'bytes');
     
+    // CRITICAL: Prevent Vercel / Next.js / CDNs from compressing video stream (gzip/brotli buffering)
+    responseHeaders.set('Cache-Control', 'no-cache, no-transform');
+
     if (response.headers.has('content-length')) {
       responseHeaders.set('Content-Length', response.headers.get('content-length') as string);
     }
@@ -82,6 +78,7 @@ export async function GET(request: Request) {
       responseHeaders.set('Content-Range', response.headers.get('content-range') as string);
     }
 
+    // Do NOT forward Content-Encoding (e.g. gzip) to ensure raw video stream passthrough
     return new Response(response.body, {
       status: response.status,
       headers: responseHeaders,
@@ -92,5 +89,3 @@ export async function GET(request: Request) {
     return new Response('فشل في تشغيل الفيديو', { status: 500 });
   }
 }
-
-

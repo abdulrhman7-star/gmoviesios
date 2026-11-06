@@ -17,9 +17,9 @@ function EmbedPlayerContent() {
   const autoplay = searchParams.get('autoplay') === '1' || searchParams.get('autoplay') === 'true';
   const muted = searchParams.get('muted') === '1' || searchParams.get('muted') === 'true';
   const poster = searchParams.get('poster') || '';
-  const paramMode = searchParams.get('mode') || 'proxy';
+  const paramMode = searchParams.get('mode') || 'direct';
 
-  const [streamMode, setStreamMode] = useState<'direct' | 'proxy'>(paramMode === 'direct' ? 'direct' : 'proxy');
+  const [streamMode, setStreamMode] = useState<'direct' | 'proxy'>(paramMode === 'proxy' ? 'proxy' : 'direct');
   const [videoSrc, setVideoSrc] = useState<string>(rawSrc);
   const [qualities, setQualities] = useState<VideoQuality[]>(rawSrc ? [{ quality: 'HD', url: rawSrc }] : []);
   const [selectedQualityIdx, setSelectedQualityIdx] = useState<number>(0);
@@ -201,11 +201,12 @@ function EmbedPlayerContent() {
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
             onError={() => {
-              setError(
-                streamMode === 'direct'
-                  ? 'تعذر تشغيل الرابط المباشر (قيود CORS أو الصيغة).'
-                  : 'تعذر تشغيل الفيديو داخل المشغل المضمن'
-              );
+              if (streamMode === 'direct') {
+                console.warn('Direct stream failed, falling back to proxy...');
+                setStreamMode('proxy');
+              } else {
+                setError('تعذر تشغيل الفيديو داخل المشغل المضمن');
+              }
             }}
           >
             <source src={videoSrc} type="video/mp4" />

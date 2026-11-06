@@ -47,7 +47,7 @@ export default function AkwamApp() {
   const [videoLinks, setVideoLinks] = useState<VideoLink[]>([]);
   const [selectedQualityIdx, setSelectedQualityIdx] = useState<number>(0);
   const [videoError, setVideoError] = useState(false);
-  const [streamMode, setStreamMode] = useState<'direct' | 'proxy'>('proxy');
+  const [streamMode, setStreamMode] = useState<'direct' | 'proxy'>('direct');
   
   // Embed Modal State
   const [isEmbedOpen, setIsEmbedOpen] = useState<boolean>(false);
@@ -107,6 +107,51 @@ export default function AkwamApp() {
       isCancelled = true;
     };
   }, [view, movies.length, series.length]);
+
+  useEffect(() => {
+    const onTabChange = (e: Event) => {
+      const customEvent = e as CustomEvent<{ tab: 'all' | 'movies' | 'series' }>;
+      const tab = customEvent.detail?.tab;
+      if (tab === 'movies' || tab === 'series' || tab === 'all') {
+        setView('home');
+        setHomeTab(tab);
+        setError('');
+      }
+    };
+
+    const onNavSearch = (e: Event) => {
+      const customEvent = e as CustomEvent<{ query: string }>;
+      const q = customEvent.detail?.query;
+      if (q) {
+        setQuery(q);
+        setView('search');
+        setLoading(true);
+        fetch(`/api/search?q=${encodeURIComponent(q)}`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              setResults(data.data || []);
+            } else {
+              setError(data.error || 'لا توجد نتائج');
+            }
+          })
+          .catch(() => {
+            setError('فشل في جلب نتائج البحث');
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+    };
+
+    window.addEventListener('nav-tab-change', onTabChange);
+    window.addEventListener('nav-search', onNavSearch);
+
+    return () => {
+      window.removeEventListener('nav-tab-change', onTabChange);
+      window.removeEventListener('nav-search', onNavSearch);
+    };
+  }, []);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -545,7 +590,14 @@ export default function AkwamApp() {
                   className="w-full h-full object-contain"
                   src={streamMode === 'direct' ? (activeVideoUrl || videoLinks[0]?.url) : `/api/stream?url=${encodeURIComponent(activeVideoUrl || videoLinks[0]?.url)}`}
                   controlsList="nodownload"
-                  onError={() => setVideoError(true)}
+                  onError={() => {
+                    if (streamMode === 'direct') {
+                      console.warn('Direct stream failed, falling back to proxy...');
+                      setStreamMode('proxy');
+                    } else {
+                      setVideoError(true);
+                    }
+                  }}
                   onPlay={() => setVideoError(false)}
                 >
                   <source src={activeVideoUrl || videoLinks[0]?.url} type="video/mp4" />
